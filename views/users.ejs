@@ -1,5 +1,4 @@
 <%- include('./partials/header.ejs'); %>
-
     <div class="manageUser-container">
       <div id="title">
         <h2>Manage Users</h2>
@@ -33,38 +32,34 @@
         </table>
       </div>
     </div>
-
-    <div class="modal-wrapper" id="add-user-modal">
-      <div class="modal">
-        <a href="#" onclick="closeModal()" class="modal-close">+</a>
-        <div class="modal-title">
-          <h2>Create New User</h2>
-        </div>
-        <div class="modal-body">
-          <form id="add-user-form">
-            <input type="text" placeholder="enter name" name="name" />
-            <p class="error show">This is error</p>
-            <input type="text" placeholder="enter email" name="email" />
-            <input type="text" placeholder="enter mobile" name="mobile" />
-            <input
-              type="password"
-              placeholder="enter password"
-              name="password"
-            />
-            <input type="file" name="avatar" />
-            <input type="submit" value="Submit" />
-          </form>
-        </div>
-      </div>
-    </div>
+    <%- include('./partials/add-user-modal.ejs'); %>
     <script>
-      const modal = document.querySelector("#add-user-modal");
-      function closeModal() {
-        modal.style.display = "none";
+      // toasts
+      const deleteToast = Toastify({
+          text: "User was deleted successfully!",
+          duration: 3000,
+      });
+
+      const deleteErrorToast = Toastify({
+          text: "Could not delete the user!",
+          duration: 3000,
+      });
+      
+      // delete user function
+      async function deleteUser(userId) {
+          let response = await fetch(`/users/${userId}`, {
+              method: "DELETE",
+          });
+
+          let result = await response.json();
+
+          if (result.errors) {
+              deleteErrorToast.showToast();
+          } else {
+              deleteToast.showToast();
+              document.getElementById(userId).remove();
+          }
       }
-      function openModal() {
-        modal.style.display = "block";
-      }
-    </script>
+  </script>
   </body>
 </html>
